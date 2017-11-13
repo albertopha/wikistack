@@ -50,10 +50,10 @@ var User = db.define('user', {
     email: {
         type: Sequelize.STRING,
         allowNull: false,
-        validate: {
-            isEmail: true,
-            unique: true
-        }
+        // validate: {
+        //     isEmail: true,
+        //     unique: true
+        // }
     }
 });
 

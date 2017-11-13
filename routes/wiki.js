@@ -12,7 +12,6 @@ module.exports = router;
 router.get('/', function(req, res, next) {
   Page.findAll({})
   .then(pages => {
-    console.log('the pages: ', pages)
     res.render('index', {
       pages: pages
     })
@@ -21,48 +20,43 @@ router.get('/', function(req, res, next) {
   // res.redirect('/');
 });
 
-router.post('/', function(req, res, next) {
+router.post('/add', function(req, res, next) {
+  console.log(req.body);  
   User.findOrCreate({
     where: {
       name: req.body.name,
       email: req.body.email
     }
   })
-  .then(function (values) {
-    var user = values[0];
-    var page = Page.build({
-      title: req.body.title,
-      content: req.body.content
-    });
-    return page.save().then(function (page) {
+  .spread(function(user){
+    return Page.create(req.body).then(function(page){
       return page.setAuthor(user);
     });
   })
-  .then(function (page) {
+  .then(function(page){
     res.redirect(page.route);
   })
   .catch(next);
-
 });
 
 router.get('/add', function(req, res, next) {
   res.render('addpage');
 });
 
-router.post('/add', function(req, res, next){
-  // STUDENT ASSIGNMENT:
-  // add definitions for `title` and `content`
+// router.post('/add', function(req, res, next){
+//   // STUDENT ASSIGNMENT:
+//   // add definitions for `title` and `content`
 
-  var page = Page.build({
-    title: req.body.title,
-    content: req.body.content,
-    email: req.body.email,
-    status: req.body.status
-  });
+//   var page = Page.build({
+//     title: req.body.title,
+//     content: req.body.content,
+//     email: req.body.email,
+//     status: req.body.status
+//   });
 
-  page.save()
-  .then(page => res.redirect(page.route));
-});
+//   page.save()
+//   .then(page => res.redirect(page.route));
+// });
 
 router.get('/:urlTitle', function (req, res, next) {
 

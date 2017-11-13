@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use('/wiki', require('./routes/wiki'));
-// app.use('/user', require('./routes/user'));
+app.use('/user', require('./routes/user'));
 
 
 app.get('/', function (req, res) {
@@ -40,7 +40,7 @@ app.get('/', function (req, res) {
 // .catch(console.error);
 
 // make sure you are exporting your db from your models file
-models.db.sync({force: false})
+models.db.sync({})
 .then(function () {
     // make sure to replace the name below with your express app
     app.listen(3000, function () {
