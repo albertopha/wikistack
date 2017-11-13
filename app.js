@@ -40,7 +40,7 @@ app.get('/', function (req, res) {
 // .catch(console.error);
 
 // make sure you are exporting your db from your models file
-models.db.sync({force: true})
+models.db.sync({force: false})
 .then(function () {
     // make sure to replace the name below with your express app
     app.listen(3000, function () {

@@ -10,11 +10,39 @@ module.exports = router;
 // const router = require('./index');
 
 router.get('/', function(req, res, next) {
-  res.redirect('/');
+  Page.findAll({})
+  .then(pages => {
+    console.log('the pages: ', pages)
+    res.render('index', {
+      pages: pages
+    })
+  })
+  .catch(next)
+  // res.redirect('/');
 });
 
 router.post('/', function(req, res, next) {
-  res.send('got to POST /wiki/');
+  User.findOrCreate({
+    where: {
+      name: req.body.name,
+      email: req.body.email
+    }
+  })
+  .then(function (values) {
+    var user = values[0];
+    var page = Page.build({
+      title: req.body.title,
+      content: req.body.content
+    });
+    return page.save().then(function (page) {
+      return page.setAuthor(user);
+    });
+  })
+  .then(function (page) {
+    res.redirect(page.route);
+  })
+  .catch(next);
+
 });
 
 router.get('/add', function(req, res, next) {
@@ -32,12 +60,26 @@ router.post('/add', function(req, res, next){
     status: req.body.status
   });
 
-  // STUDENT ASSIGNMENT:
-  // make sure we only redirect *after* our save is complete!
-  // note: `.save` returns a promise or it can take a callback.
   page.save()
-  .then(page => res.json(page));
-  // -> after save -> res.redirect('/');
-  // console.log(req.body);
-  // res.json(req.body);
+  .then(page => res.redirect(page.route));
 });
+
+router.get('/:urlTitle', function (req, res, next) {
+
+  Page.findOne({
+    where: {
+      urlTitle: req.params.urlTitle
+    }
+  })
+  .then(foundPage => {
+    if (!foundPage) {
+      throw new Error("no page found");
+    } else {
+        res.render('wikipage', {
+          page: foundPage
+        })
+    }
+  })
+  .catch(next)
+  // res.send('dynamic routing: ' + req.params.urlTitle);
+})
