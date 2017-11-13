@@ -35,9 +35,9 @@ router.post('/add', function(req, res, next){
   // STUDENT ASSIGNMENT:
   // make sure we only redirect *after* our save is complete!
   // note: `.save` returns a promise or it can take a callback.
-  page.save();
+  page.save()
+  .then(page => res.json(page));
   // -> after save -> res.redirect('/');
-  res.redirect('/');
   // console.log(req.body);
   // res.json(req.body);
 });
