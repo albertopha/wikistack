@@ -20,3 +20,24 @@ router.post('/', function(req, res, next) {
 router.get('/add', function(req, res, next) {
   res.render('addpage');
 });
+
+router.post('/add', function(req, res, next){
+  // STUDENT ASSIGNMENT:
+  // add definitions for `title` and `content`
+
+  var page = Page.build({
+    title: req.body.title,
+    content: req.body.content,
+    email: req.body.email,
+    status: req.body.status
+  });
+
+  // STUDENT ASSIGNMENT:
+  // make sure we only redirect *after* our save is complete!
+  // note: `.save` returns a promise or it can take a callback.
+  page.save();
+  // -> after save -> res.redirect('/');
+  res.redirect('/');
+  // console.log(req.body);
+  // res.json(req.body);
+});
